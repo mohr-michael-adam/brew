@@ -1,3 +1,46 @@
-- name: Testing
+- name: Install Linux packages
+  apt:
+    pkg:
+      - python-dev
+      - libbluetooth-dev
+      - libcap2-bin
+
+- name: Determine the path to python3
+  command: "which python3"
+  register: python3_path
+  changed_when: false
+
+- name: Fail if we can't get the python3 path
+  fail:
+    msg: "Unable to determine the path to python3 {{ python3_path }}"
+  when: python3_path.rc != 0
+
+- name: Get full path to python3
+  stat:
+    path: "{{ python3_path.stdout }}"
+  register: python3_stat
+  changed_when: false
+
+- name: Allow python raw socket access
+  shell: "setcap 'cap_net_raw,cap_net_admin+eip' {{ python3_stat.stat.lnk_source }}"
+  changed_when: false
+
+- name: Clone repo
   debug:
-      msg: "Hi There"
+    msg: "TODO - Clone repo"
+
+- name: Setup log directory
+  debug:
+    msg: "TODO - Setup log directory"
+
+- name: Install pip requirements
+  debug:
+    msg: "TODO - Install pip requirements"
+
+- name: Create service
+  debug:
+    msg: "TODO - Create service"
+
+- name: Restart service
+  debug:
+    msg: "TODO - Restart service"
