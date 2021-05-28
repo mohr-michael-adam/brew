@@ -1,13 +1,14 @@
 - name: Install Linux packages
   apt:
     pkg:
-      - python-dev
+      - python3-dev
       - libbluetooth-dev
       - libcap2-bin
       - git
       - python3-pip
       - python-setuptools
       - logrotate
+      - bluetooth
 
 - name: Determine the path to python3
   command: "which python3"
@@ -88,3 +89,8 @@
   notify:
     - reload systemd
     - restart brew
+
+- name: Make sure brew starts on boot
+  service:
+    name: brew
+    enabled: yes

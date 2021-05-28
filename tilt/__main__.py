@@ -1,6 +1,6 @@
 import argparse
 import logging
-from tilt import start_scanner
+from tilt import Scanner
 
 DEFAULT_LOG_FILE = 'tilt.log'
 DEFAULT_LOG_LEVEL = 'WARNING'
@@ -35,6 +35,4 @@ if __name__ == '__main__':
     args = _get_args()
     logger = _get_logger(args)
 
-    logger.warning("Not much here!")
-
-    start_scanner()
+    Scanner(logger).start_scanner()

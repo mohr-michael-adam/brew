@@ -3,17 +3,15 @@ from beacontools import BeaconScanner, IBeaconAdvertisement
 
 
 class Scanner:
+    logger = None
+
     def __init__(self, logger):
-        self.logger = logger
+        Scanner.logger = logger
 
     def start_scanner(self):
         scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
         scanner.start()
-        self.logger.warning("Scanning started")
-
-    @staticmethod
-    def get_logger(self):
-        return self.logger
+        Scanner.logger.warning("Scanning started")
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
@@ -21,5 +19,4 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
     major = packet.major
     minor = packet.minor
 
-    Scanner.get_logger("UUID %s, major %d, minor %d" % (uuid, major, minor))
-
+    Scanner.logger.warning("UUID %s, major %d, minor %d" % (uuid, major, minor))
