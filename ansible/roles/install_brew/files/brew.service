@@ -1,0 +1,14 @@
+[Unit]
+Description=Brew Service
+After=multi-user.target syslog.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /brew/tilt/__main__.py --log-file /var/log/brew/brew.log
+StandardInput=null
+StandardOutput=syslog
+StandardError=syslog
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

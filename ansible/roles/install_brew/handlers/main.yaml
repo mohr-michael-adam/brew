@@ -1,0 +1,9 @@
+- name: reload systemd
+  systemd:
+    name: unused reload systemd handler name string
+    daemon-reload: yes
+
+- name: restart brew
+  service:
+    name: brew
+    state: restarted

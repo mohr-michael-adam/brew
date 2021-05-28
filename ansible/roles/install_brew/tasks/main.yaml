@@ -41,6 +41,7 @@
   git:
     repo: "https://github.com/mohr-michael-adam/brew.git"
     dest: /brew
+  notify: restart brew
 
 - name: Setup log directory
   file:
@@ -78,11 +79,12 @@
     mode: 0600
 
 - name: Create service
-  debug:
-    msg: "TODO - Create service"
-
-- name: Restart service
-  debug:
-    msg: "TODO - Restart service"
-
-
+  copy:
+    src: brew.service
+    dest: /lib/systemd/system/brew.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+    - restart brew
