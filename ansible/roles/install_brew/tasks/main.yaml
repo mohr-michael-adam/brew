@@ -4,6 +4,9 @@
       - python-dev
       - libbluetooth-dev
       - libcap2-bin
+      - git
+      - python3-pip
+      - python-setuptools
 
 - name: Determine the path to python3
   command: "which python3"
@@ -25,17 +28,49 @@
   shell: "setcap 'cap_net_raw,cap_net_admin+eip' {{ python3_stat.stat.lnk_source }}"
   changed_when: false
 
-- name: Clone repo
-  debug:
-    msg: "TODO - Clone repo"
+- name: Create directory for the code
+  file:
+    path: /brew
+    owner: root
+    group: root
+    mode: '0644'
+    state: directory
+
+- name: Git checkout
+  git:
+    repo: "https://github.com/mohr-michael-adam/brew.git"
+    dest: /brew
 
 - name: Setup log directory
-  debug:
-    msg: "TODO - Setup log directory"
+  file:
+    path: /var/log/brew
+    owner: root
+    group: root
+    mode: '0644'
+    state: directory
+
+- name: Slurp the pip requirements
+  slurp:
+    src: /brew/requirements.txt
+  register: slurped_requirements
+
+- name: Decode the pip requirements
+  set_fact:
+    raw_requirements: "{{ slurped_requirements['content'] | b64decode  }}"
+
+- name: Parse newlines
+  set_fact:
+    requirements: "{{ raw_requirements.split('\n') }}"
 
 - name: Install pip requirements
+  pip:
+    name: "{{ item }}"
+    executable: pip3
+  with_items: "{{ requirements }}"
+
+- name: Setup log rotate
   debug:
-    msg: "TODO - Install pip requirements"
+    msg: "TODO - Log rotate"
 
 - name: Create service
   debug:
@@ -44,3 +79,5 @@
 - name: Restart service
   debug:
     msg: "TODO - Restart service"
+
+
