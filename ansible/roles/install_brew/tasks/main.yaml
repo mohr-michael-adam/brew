@@ -7,6 +7,7 @@
       - git
       - python3-pip
       - python-setuptools
+      - logrotate
 
 - name: Determine the path to python3
   command: "which python3"
@@ -69,8 +70,12 @@
   with_items: "{{ requirements }}"
 
 - name: Setup log rotate
-  debug:
-    msg: "TODO - Log rotate"
+  copy:
+    dest: /etc/logrotate.d/brew
+    src: logrotate
+    owner: root
+    group: root
+    mode: 0600
 
 - name: Create service
   debug:
