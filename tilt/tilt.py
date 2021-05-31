@@ -17,9 +17,10 @@ def start_scanner():
     scanner.start()
     logger.info("Scanner started")
 
-    data = tilt_queue.get()
+    while True:
+        data = tilt_queue.get()
 
-    logger.info("Timestamp %s, major %d, minor %d" % (data['time'].strftime("%m/%d/%Y, %H:%M:%S:%f"), data['major'], data['minor']))
+        logger.info("Timestamp %s, major %d, minor %d" % (data['time'].strftime("%m/%d/%Y, %H:%M:%S:%f"), data['major'], data['minor']))
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
