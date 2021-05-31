@@ -6,6 +6,20 @@ DEFAULT_LOG_FILE = 'tilt.log'
 DEFAULT_LOG_LEVEL = 'WARNING'
 
 
+class StreamToLogger(object):
+   """
+   Fake file-like stream object that redirects writes to a logger instance.
+   """
+   def __init__(self, logger, log_level=logging.INFO):
+      self.logger = logger
+      self.log_level = log_level
+      self.linebuf = ''
+
+   def write(self, buf):
+      for line in buf.rstrip().splitlines():
+         self.logger.log(self.log_level, line.rstrip())
+
+
 def _config_logger(args):
     log_file = DEFAULT_LOG_FILE
     log_level = DEFAULT_LOG_LEVEL
@@ -18,6 +32,10 @@ def _config_logger(args):
 
     logging.basicConfig(filename=log_file, level=log_level, format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%d-%b-%y %H:%M:%S')
+
+    stderr_logger = logging.getLogger('STDERR')
+    sl = StreamToLogger(stderr_logger, logging.ERROR)
+    sys.stderr = sl
 
 
 def _get_args():
