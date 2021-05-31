@@ -24,12 +24,14 @@ def start_scanner():
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
     uuid = packet.uuid
+    major = packet.major
+    minor = packet.minor
 
     data = dict()
 
     data['time'] = datetime.utcnow()
-    data['major'] = packet.major
-    data['minor'] = packet.minor
+    data['major'] = major
+    data['minor'] = minor
         
     logger.info("UUID %s, major %d, minor %d" % (uuid, major, minor))
 
