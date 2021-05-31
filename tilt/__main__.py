@@ -1,12 +1,12 @@
 import argparse
 import logging
-from tilt import Scanner
+from tilt import start_scanner
 
 DEFAULT_LOG_FILE = 'tilt.log'
 DEFAULT_LOG_LEVEL = 'WARNING'
 
 
-def _get_logger(args):
+def _config_logger(args):
     log_file = DEFAULT_LOG_FILE
     log_level = DEFAULT_LOG_LEVEL
 
@@ -18,8 +18,6 @@ def _get_logger(args):
 
     logging.basicConfig(filename=log_file, level=log_level, format='%(asctime)s - %(levelname)s - %(message)s',
                         datefmt='%d-%b-%y %H:%M:%S')
-
-    return logging.getLogger()
 
 
 def _get_args():
@@ -33,6 +31,6 @@ def _get_args():
 
 if __name__ == '__main__':
     args = _get_args()
-    logger = _get_logger(args)
+    _config_logger(args)
 
-    Scanner(logger).start_scanner()
+    start_scanner()

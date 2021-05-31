@@ -1,17 +1,20 @@
+import logging
+import queue
 import time
 from beacontools import BeaconScanner, IBeaconAdvertisement
 
+BLACK_TILT = "a495bb30-c5b1-4b44-b512-1370f02d74de"
 
-class Scanner:
-    logger = None
+tilt_queue = queue.Queue()
 
-    def __init__(self, logger):
-        Scanner.logger = logger
+logger = logging.getLogger()
 
-    def start_scanner(self):
-        scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
-        scanner.start()
-        Scanner.logger.warning("Scanning started")
+
+def start_scanner():
+    logger.info("Starting scanner")
+    scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
+    scanner.start()
+    logger.info("Scanner started")
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
@@ -19,4 +22,4 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
     major = packet.major
     minor = packet.minor
 
-    Scanner.logger.warning("UUID %s, major %d, minor %d" % (uuid, major, minor))
+    logger.info("UUID %s, major %d, minor %d" % (uuid, major, minor))
