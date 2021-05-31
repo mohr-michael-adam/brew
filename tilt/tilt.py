@@ -29,7 +29,7 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
 
     data['time'] = datetime.utcnow()
     data['major'] = packet.major
-    data['minor'] = package.minor
+    data['minor'] = packet.minor
         
     logger.info("UUID %s, major %d, minor %d" % (uuid, major, minor))
 
