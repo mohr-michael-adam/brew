@@ -25,15 +25,14 @@ def start_scanner():
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
     uuid = packet.uuid
 
-    if packet.uuid != BLACK_TILT:
-        return
-
     data = dict()
 
     data['time'] = datetime.utcnow()
     data['major'] = package.major
     data['minor'] = package.minor
-
-    tilt_queue.put_nowait(data)
         
     logger.info("UUID %s, major %d, minor %d" % (uuid, major, minor))
+
+    if packet.uuid == BLACK_TILT:
+        tilt_queue.put_nowait(data)
+
