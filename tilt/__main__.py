@@ -1,5 +1,6 @@
 import argparse
 import logging
+import sys
 from tilt import start_scanner
 
 DEFAULT_LOG_FILE = 'tilt.log'
