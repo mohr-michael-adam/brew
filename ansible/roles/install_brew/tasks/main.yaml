@@ -9,6 +9,7 @@
       - python-setuptools
       - logrotate
       - bluetooth
+    update_cache: yes
 
 - name: Determine the path to python3
   command: "which python3"
