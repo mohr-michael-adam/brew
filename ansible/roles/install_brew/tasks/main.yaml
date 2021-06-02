@@ -72,6 +72,23 @@
     executable: pip3
   with_items: "{{ requirements }}"
 
+# There is a bug in beacontools where it doesn't support Raspberry pi 4 model B.
+# https://github.com/citruz/beacontools/issues/63
+
+- name: Determine our version of Raspberry pi
+  slurp:
+    src: /sys/firmware/devicetree/base/model
+  register: slurped_raspberry_pi_version
+
+- name: Monkey patch the beacontools for Raspberry pi 4
+  lineinfile:
+    path: /usr/local/lib/python3.7/dist-packages/beacontools/scanner.py
+    regexp: '^        self.hci_version = self.get_hci_version()'
+    line: '        self.hci_version = 8 #self.get_hci_version()'
+    owner: root
+    group: staff
+  when: "'Raspberry Pi 4' in slurped_raspberry_pi_version['content'] | b64decode"
+
 - name: Setup log rotate
   copy:
     dest: /etc/logrotate.d/brew
