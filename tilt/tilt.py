@@ -34,9 +34,12 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
     data['major'] = major
     data['minor'] = minor
 
+    global last_packet_sent
+
     delta = (data['time'] - last_packet_sent).total_seconds()
-        
+
     logger.info("UUID %s, major %d, minor %d, time since last packet %d" % (uuid, major, minor, delta))
 
     if delta > TIME_BETWEEN_PACKETS and packet.uuid == BLACK_TILT:
         tilt_queue.put_nowait(data)
+        last_packet_sent = data['time']
