@@ -9,6 +9,7 @@ while true; do
   echo "Sending beacon with temp $major and gravity $minor"
 
   mbeacon -uuid ${UUID} -major ${major} -minor ${minor} & 
+  disown
 
   sleep 0.250
  
