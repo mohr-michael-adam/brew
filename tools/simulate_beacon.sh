@@ -11,7 +11,7 @@ while true; do
   mbeacon -uuid ${UUID} -major ${major} -minor ${minor} & 
   disown
 
-  sleep 0.250
+  sleep 0.1
  
   pkill mbeacon
 
