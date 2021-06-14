@@ -18,10 +18,15 @@ def _get_args():
 if __name__ == '__main__':
     args = _get_args()
     signature = sign_data(args.private_key, encoded_date)
+    signature_decoded = signature.decode("utf-8")
 
-    print("Signature %s" % signature)
+    print("Signature %s" % signature_decoded)
 
-    if verify_sign(args.public_key, signature, encoded_date):
+    payload = dict()
+    payload['signature'] = signature.decode("utf-8")
+    json.dumps(payload)
+
+    if verify_sign(args.public_key, signature_decoded.encode("utf-8"), encoded_date):
         print("Signature verified")
     else:
         print("Who are you?!")

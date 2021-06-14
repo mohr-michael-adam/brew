@@ -2,7 +2,7 @@ import json
 import logging
 import queue
 from datetime import datetime
-from sign import sign_data
+from .sign import sign_data
 
 import requests
 from beacontools import BeaconScanner, IBeaconAdvertisement
@@ -48,7 +48,7 @@ def start_scanner(url, name, private_key):
         payload['fahrenheit'] = data['temp']
         payload['celsius'] = celsius
         payload['gravity'] = gravity
-        payload['signature'] = sign_data(private_key, json.dumps(payload).encode('utf-8'))
+        payload['signature'] = sign_data(private_key, json.dumps(payload).encode('utf-8')).decode("utf-8")
 
         payload_json = json.dumps(payload)
 
