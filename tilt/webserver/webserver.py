@@ -4,7 +4,7 @@ import json
 from flask import Flask
 from flask import request
 
-from sign import verify_sign
+from tilt import verify_sign
 
 app = Flask(__name__)
 public_key = None
@@ -17,7 +17,7 @@ def _get_args():
     return parser.parse_args()
 
 
-@app.route("/", methods = ['POST'])
+@app.route("/", methods=['POST'])
 def index():
     request_data = request.get_json()
 
