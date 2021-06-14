@@ -17,6 +17,7 @@ MAX_GRAVITY = 1120
 tilt_queue = queue.Queue()
 logger = logging.getLogger()
 last_packet_sent = datetime.utcnow()
+headers = {'Content-type': 'application/json'}
 
 
 def start_scanner(url):
@@ -47,10 +48,10 @@ def start_scanner(url):
 
         payload_json = json.dumps(payload)
 
-        logger.debug("Sending to %s the payload %s" % (url, payload_json))
+        logger.debug("Sending to %s with headers %s the payload %s" % (url, headers, payload_json))
 
         try:
-            response = requests.post(url, data=payload_json, timeout=10)
+            response = requests.post(url, data=payload_json, headers = headers, timeout=10)
             response.raise_for_status()
         except HTTPError as http_err:
             logger.exception(http_err)
