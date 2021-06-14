@@ -45,6 +45,7 @@ def _get_args():
     parser.add_argument('--log-level', dest='log_level', help='The log level')
     parser.add_argument('url', help='URL to send payload to')
     parser.add_argument('name', help='The name of the beer')
+    parser.add_argument('private_key', help='The private key to sign the data')
 
     return parser.parse_args()
 
@@ -57,4 +58,4 @@ if __name__ == '__main__':
         logging.getLogger().error('Invalid URL: %s' % args.url)
         sys.exit(1)
 
-    start_scanner(args.url, args.name)
+    start_scanner(args.url, args.name, args.private_key)

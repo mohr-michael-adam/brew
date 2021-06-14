@@ -2,6 +2,7 @@ import json
 import logging
 import queue
 from datetime import datetime
+from sign import sign_data
 
 import requests
 from beacontools import BeaconScanner, IBeaconAdvertisement
@@ -20,7 +21,7 @@ last_packet_sent = datetime.utcnow()
 headers = {'Content-type': 'application/json'}
 
 
-def start_scanner(url, name):
+def start_scanner(url, name, private_key):
     logger.info("Starting scanner")
     scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
     scanner.start()
@@ -47,13 +48,14 @@ def start_scanner(url, name):
         payload['fahrenheit'] = data['temp']
         payload['celsius'] = celsius
         payload['gravity'] = gravity
+        payload['signature'] = sign_data(private_key, json.dumps(payload).encode('utf-8'))
 
         payload_json = json.dumps(payload)
 
         logger.debug("Sending to %s with headers %s the payload %s" % (url, headers, payload_json))
 
         try:
-            response = requests.post(url, data=payload_json, headers = headers, timeout=10)
+            response = requests.post(url, data=payload_json, headers=headers, timeout=10)
             response.raise_for_status()
         except HTTPError as http_err:
             logger.exception(http_err)

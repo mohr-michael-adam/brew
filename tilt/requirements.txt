@@ -2,3 +2,4 @@ beacontools[scan]
 pybluez
 requests
 validators
+pycrypto
