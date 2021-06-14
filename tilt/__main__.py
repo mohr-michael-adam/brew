@@ -43,7 +43,7 @@ def _get_args():
     parser = argparse.ArgumentParser(description='Read measurements from the Tilt hydrometer and push to a URL.')
     parser.add_argument('--log-file', dest='log_file', help='The log file')
     parser.add_argument('--log-level', dest='log_level', help='The log level')
-    parser.add_argument('url', dest='url', help='URL to send payload to')
+    parser.add_argument('url', help='URL to send payload to')
 
     return parser.parse_args()
 
