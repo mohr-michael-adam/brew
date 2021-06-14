@@ -20,7 +20,7 @@ last_packet_sent = datetime.utcnow()
 headers = {'Content-type': 'application/json'}
 
 
-def start_scanner(url):
+def start_scanner(url, name):
     logger.info("Starting scanner")
     scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
     scanner.start()
@@ -32,8 +32,9 @@ def start_scanner(url):
         celsius = round((data['temp'] - 32) * 5.0 / 9.0)
         gravity = data['gravity'] * .001
 
-        logger.info("Timestamp %s, temp F %d, temp C %1.2f, gravity %1.4f" %
-                    (timestamp,
+        logger.info("Beer %s, timestamp %s, temp F %d, temp C %1.2f, gravity %1.4f" %
+                    (name,
+                     timestamp,
                      data['temp'],
                      celsius,
                      gravity
@@ -41,6 +42,7 @@ def start_scanner(url):
 
         payload = dict()
 
+        payload['name'] = name
         payload['timestamp'] = timestamp
         payload['fahrenheit'] = data['temp']
         payload['celsius'] = celsius
