@@ -2,7 +2,7 @@ import json
 import logging
 import queue
 from datetime import datetime
-from .sign import sign_data
+from sign import sign_data
 
 import requests
 from beacontools import BeaconScanner, IBeaconAdvertisement
