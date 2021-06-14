@@ -1,2 +1,3 @@
 beacontools[scan]
 pybluez
+requests

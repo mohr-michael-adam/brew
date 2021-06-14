@@ -55,7 +55,7 @@
 
 - name: Slurp the pip requirements
   slurp:
-    src: /brew/requirements.txt
+    src: /brew/tilt/requirements.txt
   register: slurped_requirements
 
 - name: Decode the pip requirements

@@ -1,7 +1,11 @@
+import json
 import logging
 import queue
 from datetime import datetime
+
+import requests
 from beacontools import BeaconScanner, IBeaconAdvertisement
+from requests.exceptions import HTTPError
 
 BLACK_TILT = "a495bb30-c5b1-4b44-b512-1370f02d74de"
 TIME_BETWEEN_PACKETS = 5 * 60
@@ -15,7 +19,7 @@ logger = logging.getLogger()
 last_packet_sent = datetime.utcnow()
 
 
-def start_scanner():
+def start_scanner(url):
     logger.info("Starting scanner")
     scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
     scanner.start()
@@ -23,13 +27,37 @@ def start_scanner():
 
     while True:
         data = tilt_queue.get()
+        timestamp = data['time'].strftime("%m/%d/%Y, %H:%M:%S:%f")
+        celsius = round((data['temp'] - 32) * 5.0 / 9.0)
+        gravity = data['gravity'] * .001
 
         logger.info("Timestamp %s, temp F %d, temp C %1.2f, gravity %1.4f" %
-                    (data['time'].strftime("%m/%d/%Y, %H:%M:%S:%f"),
+                    (timestamp,
                      data['temp'],
-                     round((data['temp'] - 32) * 5.0/9.0),
-                     data['gravity'] * .001)
-                    )
+                     celsius,
+                     gravity
+                    ))
+
+        payload = dict()
+
+        payload['timestamp'] = timestamp
+        payload['fahrenheit'] = data['temp']
+        payload['celsius'] = celsius
+        payload['gravity'] = gravity
+
+        payload_json = json.dumps(payload)
+
+        logger.debug("Sending to %s the payload %s" % (url, payload_json))
+
+        try:
+            response = requests.post(url, data=payload_json, timeout=10)
+            response.raise_for_status()
+        except HTTPError as http_err:
+            logger.exception(http_err)
+        except Exception as err:
+            logger.exception(err)
+        else:
+            logger.info("Payload delivered!")
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
