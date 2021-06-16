@@ -1,4 +1,6 @@
 __pycache__
 .idea
+.terraform
+terraform/.terraform.lock.hcl
 tilt.log
 venv
