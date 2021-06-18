@@ -5,3 +5,7 @@ variable "secret_key" {
 variable "access_key" {
   type = string
 }
+
+variable "receiver_version" {
+  type = string
+}
