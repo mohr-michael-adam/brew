@@ -29,7 +29,7 @@ def start_scanner(url, name, private_key):
 
     while True:
         data = tilt_queue.get()
-        timestamp = data['time'].strftime("%m/%d/%Y, %H:%M:%S:%f")
+        timestamp = data['time'].isoformat()
         celsius = round((data['temp'] - 32) * 5.0 / 9.0)
         gravity = data['gravity'] * .001
 
