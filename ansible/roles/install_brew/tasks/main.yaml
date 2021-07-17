@@ -98,8 +98,8 @@
     mode: 0600
 
 - name: Create service
-  copy:
-    src: brew.service
+  template:
+    src: brew.service.j2
     dest: /lib/systemd/system/brew.service
     owner: root
     group: root

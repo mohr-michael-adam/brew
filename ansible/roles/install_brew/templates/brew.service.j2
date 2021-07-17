@@ -4,7 +4,7 @@ After=multi-user.target syslog.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /brew/tilt/__main__.py --log-file /var/log/brew/brew.log --log-level DEBUG http://192.168.50.195:5000/ "test beer 1" /root/.ssh/sign.key
+ExecStart=/usr/bin/python3 /brew/tilt/__main__.py --log-file /var/log/brew/brew.log --log-level DEBUG "{{ url }}" "{{ beer_name }}" /root/.ssh/sign.key
 StandardInput=null
 StandardOutput=syslog
 StandardError=syslog
