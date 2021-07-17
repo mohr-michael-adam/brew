@@ -21,7 +21,7 @@ def _get_args():
 def index():
     request_data = request.get_json()
 
-    print("Got the request data %s" % request_data)
+    print("Got the request data %s" % json.dumps(request_data))
 
     signature = request_data['signature']
 

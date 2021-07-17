@@ -1,3 +1,4 @@
+import boto3
 import logging
 import json
 
@@ -24,7 +25,7 @@ def verify_sign(public_key, signature, data):
 
 
 def lambda_handler(event, context):
-    logger.info('Event: %s', event)
+    logger.info('Event: %s', json.dumps(event))
 
     signature = event['signature']
 
@@ -32,10 +33,24 @@ def lambda_handler(event, context):
 
     encoded_data = json.dumps(event).encode('utf-8')
 
-    if verify_sign(public_key_path, signature.encode('utf-8'), encoded_data):
-        logger.info('Validated the signature')
-    else:
-        logger.warning('Unable to validate the signature')
+    if not verify_sign(public_key_path, signature.encode('utf-8'), encoded_data):
+        try:
+            raise Exception('Unable to validate the signature')
+        except Exception as e:
+            logger.exception(e)
+            raise e
 
-    response = {}
+    logger.info('Validated the signature')
+
+    # adjust the data to match DynamoDB
+    event['brew'] = event.pop('name')
+
+    encoded_data = json.dumps(event).encode('utf-8')
+
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('brew')
+    response = table.put_item(
+        Item=encoded_data
+    )
+
     return response
