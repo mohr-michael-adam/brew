@@ -28,6 +28,10 @@ def verify_sign(public_key, signature, data):
 def lambda_handler(event, context):
     logger.info('Event: %s', json.dumps(event))
 
+    # when routed via API Gateway the payload changes
+    if "body" in event:
+        event = json.loads(event['body'])
+
     signature = event['signature']
 
     del event['signature']
@@ -53,4 +57,11 @@ def lambda_handler(event, context):
         Item=event
     )
 
-    return response
+    logger.info('Dynamo Response: %s', json.dumps(response))
+
+    if 'ResponseMetadata' in response:
+        if 'HTTPStatusCode' in response['ResponseMetadata']:
+            if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+                return {"statusCode": 200, "body": "Success"}
+
+    return {"statusCode": 500, "body": "Failure"}
