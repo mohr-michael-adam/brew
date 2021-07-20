@@ -1,4 +1,5 @@
 import boto3
+import decimal
 import logging
 import json
 
@@ -44,13 +45,12 @@ def lambda_handler(event, context):
 
     # adjust the data to match DynamoDB
     event['brew'] = event.pop('name')
-
-    encoded_data = json.dumps(event).encode('utf-8')
+    event['gravity'] = decimal.Decimal(str(event['gravity']))
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('brew')
     response = table.put_item(
-        Item=encoded_data
+        Item=event
     )
 
     return response
