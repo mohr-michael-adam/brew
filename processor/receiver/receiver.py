@@ -50,6 +50,7 @@ def lambda_handler(event, context):
     # adjust the data to match DynamoDB
     event['brew'] = event.pop('name')
     event['gravity'] = decimal.Decimal(str(event['gravity']))
+    event['celsius'] = decimal.Decimal(str(event['celsius']))
 
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('brew')
