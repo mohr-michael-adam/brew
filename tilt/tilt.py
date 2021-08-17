@@ -30,7 +30,7 @@ def start_scanner(url, name, private_key):
     while True:
         data = tilt_queue.get()
         timestamp = data['time'].isoformat()
-        celsius = round((data['temp'] - 32) * 5.0 / 9.0)
+        celsius = round((data['temp'] - 32) * 5.0 / 9.0, 1)
         gravity = round(data['gravity'] * .001, 4)
 
         logger.info("Beer %s, timestamp %s, temp F %d, temp C %1.2f, gravity %1.4f" %
