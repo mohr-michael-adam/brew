@@ -9,3 +9,7 @@ variable "access_key" {
 variable "receiver_version" {
   type = string
 }
+
+variable "exporter_version" {
+  type = string
+}

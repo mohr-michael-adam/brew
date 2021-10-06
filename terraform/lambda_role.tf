@@ -41,6 +41,12 @@ resource "aws_iam_policy" "lambda_dynamo" {
                 "dynamodb:UpdateItem"
             ],
             "Resource": "arn:aws:dynamodb:us-east-1:351511140876:table/brew"
+        },
+        {
+            "Sid": "S3PutObject",
+            "Effect": "Allow",
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::mohr-brew-data-bucket/*"
         }
     ]
   })
