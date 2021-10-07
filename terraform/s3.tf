@@ -1,6 +1,18 @@
 resource "aws_s3_bucket" "brew_data_bucket" {
   bucket = "mohr-brew-data-bucket"
   acl    = "public-read"
+
+  website {
+    index_document = "index.html"
+  }
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "PUT", "POST"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
 }
 
 resource "aws_s3_bucket_policy" "brew_data_bucket_public_read_policy" {
@@ -22,4 +34,11 @@ resource "aws_s3_bucket_policy" "brew_data_bucket_public_read_policy" {
         }
     ]
   })
+}
+
+resource "aws_s3_bucket_object" "index_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "index.html"
+  source = "bin/index.html"
+  content_type = "text/html"
 }
