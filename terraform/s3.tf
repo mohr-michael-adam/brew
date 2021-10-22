@@ -41,6 +41,8 @@ resource "aws_s3_bucket_object" "index_html_object" {
   key    = "index.html"
   source = "ui/index.html"
   content_type = "text/html"
+
+  etag = filemd5("ui/index.html")
 }
 
 resource "aws_s3_bucket_object" "page_html_object" {
@@ -57,6 +59,13 @@ resource "aws_s3_bucket_object" "format_css_object" {
   content_type = "text/css"
 }
 
+resource "aws_s3_bucket_object" "logic_js_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "logic.js"
+  source = "ui/logic.js"
+  content_type = "text/javascript"
+}
+
 resource "aws_s3_bucket_object" "german_pilsner_html_object" {
   bucket = aws_s3_bucket.brew_data_bucket.id
   key    = "German Pilsner.html"
@@ -71,9 +80,9 @@ resource "aws_s3_bucket_object" "saaz_golden_ale_html_object" {
   content_type = "text/html"
 }
 
-resource "aws_s3_bucket_object" "logic_js_object" {
+resource "aws_s3_bucket_object" "irish_red_ale_html_object" {
   bucket = aws_s3_bucket.brew_data_bucket.id
-  key    = "logic.js"
-  source = "ui/logic.js"
-  content_type = "text/javascript"
+  key    = "Irish Red Ale.html"
+  source = "ui/Irish Red Ale.html"
+  content_type = "text/html"
 }
