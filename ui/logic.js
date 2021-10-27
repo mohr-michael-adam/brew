@@ -80,7 +80,7 @@ $(document).ready(function() {
             }
         }],
         tooltip: {
-            xDateFormat: '%A, %b %m %Y, %H:%M:%S.%L',
+            xDateFormat: '%A, %b %e %Y, %H:%M:%S.%L',
             shared: true
         },
         legend: {

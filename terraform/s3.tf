@@ -41,7 +41,6 @@ resource "aws_s3_bucket_object" "index_html_object" {
   key    = "index.html"
   source = "ui/index.html"
   content_type = "text/html"
-
   etag = filemd5("ui/index.html")
 }
 
@@ -50,6 +49,7 @@ resource "aws_s3_bucket_object" "page_html_object" {
   key    = "page.html"
   source = "ui/page.html"
   content_type = "text/html"
+  etag = filemd5("ui/page.html")
 }
 
 resource "aws_s3_bucket_object" "format_css_object" {
@@ -57,6 +57,7 @@ resource "aws_s3_bucket_object" "format_css_object" {
   key    = "format.css"
   source = "ui/format.css"
   content_type = "text/css"
+  etag = filemd5("ui/format.css")
 }
 
 resource "aws_s3_bucket_object" "logic_js_object" {
@@ -64,6 +65,7 @@ resource "aws_s3_bucket_object" "logic_js_object" {
   key    = "logic.js"
   source = "ui/logic.js"
   content_type = "text/javascript"
+  etag = filemd5("ui/logic.js")
 }
 
 resource "aws_s3_bucket_object" "german_pilsner_html_object" {
