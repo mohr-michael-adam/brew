@@ -88,3 +88,10 @@ resource "aws_s3_bucket_object" "irish_red_ale_html_object" {
   source = "ui/Irish Red Ale.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "whole_hop_experiment_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "Whole Hop Experiment.html"
+  source = "ui/Whole Hop Experiment.html"
+  content_type = "text/html"
+}
