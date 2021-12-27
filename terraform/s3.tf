@@ -95,3 +95,10 @@ resource "aws_s3_bucket_object" "whole_hop_experiment_html_object" {
   source = "ui/Whole Hop Experiment.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "dusseldorf_altbier_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "Dusseldorf Altbier.html"
+  source = "ui/Dusseldorf Altbier.html"
+  content_type = "text/html"
+}
