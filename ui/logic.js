@@ -13,6 +13,8 @@ function requestData() {
             var celsius = []
             var gravity = []
 
+            const timezoneOffset = (new Date().getTimezoneOffset()) * 60 * 1000;
+
             scale = 1
 
             if (data.length > 500) {
@@ -20,7 +22,8 @@ function requestData() {
             }
 
             for (let i = 0; i < data.length; i+=scale) {
-                datetime = Date.parse(data[i]["timestamp"]);
+                parsedDatetime = Date.parse(data[i]["timestamp"]);
+                datetime = parsedDatetime - timezoneOffset;
                 celsius.push([datetime,data[i]["celsius"]]);
                 gravity.push([datetime,data[i]["gravity"]]);
             }
