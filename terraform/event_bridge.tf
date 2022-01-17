@@ -3,7 +3,7 @@ resource "aws_cloudwatch_event_rule" "export_brew_event_rule" {
 
   schedule_expression = "cron(0/15 * * * ? *)"
 
-  is_enabled = false
+  is_enabled = true
 }
 
 resource "aws_cloudwatch_event_target" "export_brew_event_target" {
@@ -12,7 +12,7 @@ resource "aws_cloudwatch_event_target" "export_brew_event_target" {
 
   input = <<EOF
 {
-  "brew": "Dusseldorf Altbier"
+  "brew": "Whole Hop Experiment"
 }
 EOF
 
