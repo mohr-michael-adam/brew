@@ -102,3 +102,10 @@ resource "aws_s3_bucket_object" "dusseldorf_altbier_html_object" {
   source = "ui/Dusseldorf Altbier.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "german_pils_feb_21_2022_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "German Pils Feb 21 2022.html"
+  source = "ui/German Pils Feb 21 2022.html"
+  content_type = "text/html"
+}
