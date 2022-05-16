@@ -109,3 +109,10 @@ resource "aws_s3_bucket_object" "german_pils_feb_21_2022_html_object" {
   source = "ui/German Pils Feb 21 2022.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "anchor_steam_clone_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "Anchor Steam Clone.html"
+  source = "ui/Anchor Steam Clone.html"
+  content_type = "text/html"
+}
