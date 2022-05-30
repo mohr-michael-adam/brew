@@ -3,7 +3,7 @@ resource "aws_cloudwatch_event_rule" "export_brew_event_rule" {
 
   schedule_expression = "cron(0/15 * * * ? *)"
 
-  is_enabled = true
+  is_enabled = false
 }
 
 resource "aws_cloudwatch_event_target" "export_brew_event_target" {
