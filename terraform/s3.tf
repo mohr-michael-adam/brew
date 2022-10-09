@@ -116,3 +116,10 @@ resource "aws_s3_bucket_object" "anchor_steam_clone_html_object" {
   source = "ui/Anchor Steam Clone.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "german_pils_oct_11_2022_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "German Pils Oct 11 2022.html"
+  source = "ui/German Pils Oct 11 2022.html"
+  content_type = "text/html"
+}
