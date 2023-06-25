@@ -130,3 +130,10 @@ resource "aws_s3_bucket_object" "festa_brew_cream_ale_fall_2022_html_object" {
   source = "ui/Festa Brew Cream Ale Fall 2022.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "festa_brew_page_ale_summer_2023_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "Festa Brew Page Ale Summer 2023.html"
+  source = "ui/Festa Brew Pale Ale Summer 2023.html"
+  content_type = "text/html"
+}
