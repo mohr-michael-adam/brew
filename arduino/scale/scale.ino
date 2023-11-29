@@ -1,3 +1,9 @@
+// 
+// Required libraries
+//
+// https://github.com/bogde/HX711/archive/refs/tags/0.7.5.zip
+// 
+
 //
 // Empty Keg Weight = 3452 grams
 //
