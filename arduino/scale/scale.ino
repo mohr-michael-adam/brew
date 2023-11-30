@@ -109,7 +109,7 @@ void loop() {
     Serial.println(i);
 
     Serial.println("Gathering reading: ");
-    float reading = scales[i].get_units(2);
+    float reading = scales[i].get_units();
     readings[i][counter] = reading;
   }
 
@@ -293,5 +293,5 @@ void loop() {
     counter++;
   }
 
-  delay(500);
+  delay(2500);
 }
