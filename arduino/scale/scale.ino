@@ -3,6 +3,7 @@
 //
 // https://github.com/bogde/HX711/archive/refs/tags/0.7.5.zip
 // https://github.com/adafruit/Adafruit_FRAM_I2C/archive/refs/tags/2.0.3.zip
+// https://github.com/johnrickman/LiquidCrystal_I2C/archive/refs/tags/1.1.3.zip
 //
 
 //
@@ -27,6 +28,7 @@
 #include "Arduino.h"
 #include "HX711.h"
 #include "Adafruit_FRAM_I2C.h"
+#include "LiquidCrystal_I2C.h"
 
 const int NUM_SCALES = 1;
 const int NUM_READINGS = 4;
@@ -55,6 +57,10 @@ float readings[NUM_SCALES][NUM_READINGS];
 
 Adafruit_FRAM_I2C fram = Adafruit_FRAM_I2C();
 
+LiquidCrystal_I2C lcd(0x27,20,4); 
+
+const int LCD_OFFSET[NUM_SCALES] = { 14 };
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Beer Scale");
@@ -65,6 +71,16 @@ void setup() {
     Serial.println("I2C FRAM not identified ... check your connections?");
     while (1);
   }
+
+  lcd.init();      
+  lcd.backlight();
+  lcd.clear();
+
+  lcd.setCursor(0,1);
+  lcd.print("Blonde Lager: ");
+
+  lcd.setCursor(0,2);
+  lcd.print("Red Ale: N/A"); 
 
   for (int i = 0; i < NUM_SCALES; i++)
   {
@@ -263,6 +279,10 @@ void loop() {
 
       Serial.print("Percentage of beer left: ");
       Serial.println(round(percentage)); 
+
+      lcd.setCursor(LCD_OFFSET[i],i+1);
+      lcd.print(round(percentage));
+      lcd.print("% ");
     }
     counter = 0;  
   }
