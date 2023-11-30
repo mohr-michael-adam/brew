@@ -90,6 +90,7 @@ void setup() {
     scales[i].set_scale(SCALE_INIT_VALUES[i]);
     scales[i].tare();
     scales[i].wait_ready_retry(5);
+    scales[i].power_down();
 
     fram.readObject(i * sizeof(offsets[i]), offsets[i]);
 
@@ -109,7 +110,9 @@ void loop() {
     Serial.println(i);
 
     Serial.println("Gathering reading: ");
+    scales[i].power_up();
     float reading = scales[i].get_units();
+    scales[i].power_down();
     readings[i][counter] = reading;
   }
 
@@ -293,5 +296,5 @@ void loop() {
     counter++;
   }
 
-  delay(2500);
+  delay(5000);
 }
