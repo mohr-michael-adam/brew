@@ -2,7 +2,8 @@
 // Required libraries
 //
 // https://github.com/bogde/HX711/archive/refs/tags/0.7.5.zip
-// 
+// https://github.com/adafruit/Adafruit_FRAM_I2C/archive/refs/tags/2.0.3.zip
+//
 
 //
 // Empty Keg Weight = 3452 grams
@@ -25,6 +26,7 @@
 
 #include "Arduino.h"
 #include "HX711.h"
+#include "Adafruit_FRAM_I2C.h"
 
 const int NUM_SCALES = 1;
 const int NUM_READINGS = 4;
@@ -51,10 +53,18 @@ int offsets[NUM_SCALES] = { 0 };
 
 float readings[NUM_SCALES][NUM_READINGS];
 
+Adafruit_FRAM_I2C fram = Adafruit_FRAM_I2C();
+
 void setup() {
   Serial.begin(9600);
   Serial.println("Beer Scale");
   
+  if (fram.begin()) { 
+    Serial.println("Found I2C FRAM");
+  } else {
+    Serial.println("I2C FRAM not identified ... check your connections?");
+    while (1);
+  }
 
   for (int i = 0; i < NUM_SCALES; i++)
   {
@@ -65,7 +75,10 @@ void setup() {
     scales[i].tare();
     scales[i].wait_ready_retry(5);
 
-     // TODO - read last value from FRAM
+    fram.readObject(i * sizeof(offsets[i]), offsets[i]);
+
+    Serial.print("Found initial offset: ");
+    Serial.println(offsets[i]);
   }
 }
 
@@ -148,13 +161,14 @@ void loop() {
         // we are within the bounds of an int so flip to integers
         int reading_i = int(reading_f);
 
-        int modReading = reading_i - (reading_i % 10);
+        int modReading = reading_i - (reading_i % 10) + int(round(float(reading_i % 10) / 10)) ;
         Serial.print("Adjusted to 10s: ");
         Serial.println(modReading);
 
         if (j == 0)
         {
           first = modReading;
+          first = reading_i;
           deviation = int(abs(first * READING_DEVIATION));
 
           Serial.print("Max deviation: ");
@@ -162,7 +176,8 @@ void loop() {
         }
         else
         {
-          int difference = abs(first - modReading);
+          //int difference = abs(first - modReading);
+          int difference = abs(first - reading_i);
           Serial.print("Difference: ");
           Serial.println(difference);
 
@@ -200,48 +215,19 @@ void loop() {
         Serial.print("average reading: ");
         Serial.println(averageReading);
 
-        int averagedModReading = averageReading - (averageReading % 10);
-        Serial.print("Adjusted to 10s: ");
-        Serial.println(averagedModReading);
-
-        Serial.print("average mod reading + offset: ");
-        int offsetReading = averagedModReading + offsets[i];
+        Serial.print("average reading + offset: ");
+        int offsetReading = averageReading + offsets[i];
         Serial.println(offsetReading);
-
-        Serial.print("Grams of beer to start: ");
-        Serial.println(NET_WEIGHTS[i]);
-
-        int displayedReading = NET_WEIGHTS[i] + offsetReading;
-        if (displayedReading > NET_WEIGHTS[i]) 
-        {
-          displayedReading = NET_WEIGHTS[i];
-        }
-        Serial.print("Grams of beer left: ");
-        Serial.println(displayedReading);
-
-        float percentage = ((float) displayedReading / (float) NET_WEIGHTS[i]) * (float) 100;
-
-        if (percentage > 100)
-        {
-          percentage = 100;
-        }
-        if (percentage < 0)
-        {
-          percentage = 0;
-        }
-
-        Serial.print("Percentage of beer left: ");
-        Serial.println(round(percentage));
-
-        offsets[i] = offsetReading;
 
         Serial.print("Previous offset: ");
         Serial.println(offsets[i]);
 
+        offsets[i] = offsetReading;
+
         Serial.print("New offset: ");
         Serial.println(offsets[i]);
 
-        // TODO - write to FRAM
+        fram.writeObject(i * sizeof(offsets[i]), offsets[i]);
 
         Serial.println("taring");
         scales[i].tare();
@@ -252,7 +238,31 @@ void loop() {
       {
         Serial.println("Reading(s) aren't comparable");
       }
-      
+
+      Serial.print("Grams of beer to start: ");
+      Serial.println(NET_WEIGHTS[i]);
+
+      int displayedReading = NET_WEIGHTS[i] + offsets[i];
+      if (displayedReading > NET_WEIGHTS[i]) 
+      {
+        displayedReading = NET_WEIGHTS[i];
+      }
+      Serial.print("Grams of beer left: ");
+      Serial.println(displayedReading);
+
+      float percentage = ((float) displayedReading / (float) NET_WEIGHTS[i]) * (float) 100;
+
+      if (percentage > 100)
+      {
+        percentage = 100;
+      }
+      if (percentage < 0)
+      {
+        percentage = 0;
+      }
+
+      Serial.print("Percentage of beer left: ");
+      Serial.println(round(percentage)); 
     }
     counter = 0;  
   }

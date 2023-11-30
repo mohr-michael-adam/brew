@@ -12,7 +12,7 @@ void setup(void) {
     while (1);
   }
   
-  // zero out the scale values
+  // set the scale values
 
   int iw = 0;
   int iw2 = 0;
