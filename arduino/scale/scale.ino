@@ -177,14 +177,13 @@ void loop() {
         // we are within the bounds of an int so flip to integers
         int reading_i = int(reading_f);
 
-        int modReading = reading_i - (reading_i % 10) + int(round(float(reading_i % 10) / 10)) ;
+        int modReading = reading_i - (reading_i % 10);
         Serial.print("Adjusted to 10s: ");
         Serial.println(modReading);
 
         if (j == 0)
         {
           first = modReading;
-          first = reading_i;
           deviation = int(abs(first * READING_DEVIATION));
 
           Serial.print("Max deviation: ");
@@ -192,8 +191,7 @@ void loop() {
         }
         else
         {
-          //int difference = abs(first - modReading);
-          int difference = abs(first - reading_i);
+          int difference = abs(first - modReading);
           Serial.print("Difference: ");
           Serial.println(difference);
 
@@ -231,8 +229,12 @@ void loop() {
         Serial.print("average reading: ");
         Serial.println(averageReading);
 
-        Serial.print("average reading + offset: ");
-        int offsetReading = averageReading + offsets[i];
+        int averagedModReading = averageReading - (averageReading % 10);
+        Serial.print("Adjusted to 10s: ");
+        Serial.println(averagedModReading);
+
+        Serial.print("average mod reading + offset: ");
+        int offsetReading = averagedModReading + offsets[i];
         Serial.println(offsetReading);
 
         Serial.print("Previous offset: ");
