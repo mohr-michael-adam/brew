@@ -59,7 +59,7 @@ Adafruit_FRAM_I2C fram = Adafruit_FRAM_I2C();
 
 LiquidCrystal_I2C lcd(0x27,20,4); 
 
-const int LCD_OFFSET[NUM_SCALES] = { 14 };
+const int LCD_OFFSET[NUM_SCALES] = { 0 };
 
 void setup() {
   Serial.begin(9600);
@@ -76,7 +76,7 @@ void setup() {
   lcd.backlight();
   lcd.clear();
 
-  lcd.setCursor(0,1);
+  lcd.setCursor(0,0);
   lcd.print("Blonde Lager: ");
 
   lcd.setCursor(0,2);
@@ -251,8 +251,10 @@ void loop() {
         fram.writeObject(i * sizeof(offsets[i]), offsets[i]);
 
         Serial.println("taring");
+        scales[i].power_up();
         scales[i].tare();
         scales[i].wait_ready_retry(5);
+        scales[i].power_down();
         Serial.println("taring done");
       }
       else
@@ -264,30 +266,47 @@ void loop() {
       Serial.println(NET_WEIGHTS[i]);
 
       int displayedReading = NET_WEIGHTS[i] + offsets[i];
-      if (displayedReading > NET_WEIGHTS[i]) 
-      {
-        displayedReading = NET_WEIGHTS[i];
-      }
+      // if (displayedReading > NET_WEIGHTS[i]) 
+      // {
+      //   displayedReading = NET_WEIGHTS[i];
+      // }
       Serial.print("Grams of beer left: ");
       Serial.println(displayedReading);
 
       float percentage = ((float) displayedReading / (float) NET_WEIGHTS[i]) * (float) 100;
 
-      if (percentage > 100)
-      {
-        percentage = 100;
-      }
-      if (percentage < 0)
-      {
-        percentage = 0;
-      }
+      // if (percentage > 100)
+      // {
+      //   percentage = 100;
+      // }
+      // if (percentage < 0)
+      // {
+      //   percentage = 0;
+      // }
 
       Serial.print("Percentage of beer left: ");
       Serial.println(round(percentage)); 
 
       lcd.setCursor(LCD_OFFSET[i],i+1);
+      lcd.print(displayedReading);
+      lcd.print("g ");
+
+      int original = displayedReading;
+      int digitCount = 0;
+
+      while ( original > 0 )
+      {
+        digitCount++;
+        original = original/10;
+      }
+
+      for (int space = 0; space < (5 - digitCount); space++)
+      {
+        lcd.print(" ");
+      }
+
       lcd.print(round(percentage));
-      lcd.print("% ");
+      lcd.print("%  ");
     }
     counter = 0;  
   }
@@ -296,5 +315,5 @@ void loop() {
     counter++;
   }
 
-  delay(5000);
+  delay(2500);
 }
