@@ -42,12 +42,12 @@ const int SCALE_PINS[NUM_SCALES][2] = { { LOADCELL_DOUT_PIN_A, LOADCELL_SCK_PIN_
 const float SCALE_INIT_VALUES[NUM_SCALES] = { 22.59, 22.81 };
 const int NET_WEIGHTS[NUM_SCALES] = { 19007, 19418 };
 
-const float READING_DEVIATION = 0.20; // percentage
-
-const int MAX_READING = 2500; // grams
+const int MAX_READING = 2000; // grams
 
 const int MAX_INT = 32767;
 const int MIN_INT = -32768;
+
+const int NUM_WAIT_CYCLES = 4;
 
 HX711 scales[NUM_SCALES];
 
@@ -88,12 +88,26 @@ void setup() {
 
   for (int i = 0; i < NUM_SCALES; i++)
   {
+    int retries = 0;
+
     Serial.print("Initializing the scale: ");
     Serial.println(i);
     scales[i].begin(SCALE_PINS[i][0], SCALE_PINS[i][1]);
     scales[i].set_scale(SCALE_INIT_VALUES[i]);
+    scales[i].power_up();
+    while (!scales[i].is_ready() && retries < NUM_WAIT_CYCLES)
+    {
+      delay(250);
+      retries++;
+    }
+    
+    if (retries == NUM_WAIT_CYCLES)
+    {
+      Serial.println("Waited enough time rebooting");
+      resetFunc();
+    }
+
     scales[i].tare();
-    scales[i].wait_ready_retry(5);
     scales[i].power_down();
 
     fram.readObject(i * sizeof(offsets[i]), offsets[i]);
@@ -114,7 +128,23 @@ void loop() {
     Serial.println(i);
 
     Serial.println("Gathering reading: ");
+
     scales[i].power_up();
+
+    int retries = 0;
+
+    while (!scales[i].is_ready() && retries < NUM_WAIT_CYCLES)
+    {
+      delay(250);
+      retries++;
+    }
+    
+    if (retries == NUM_WAIT_CYCLES)
+    {
+      Serial.println("Waited enough time rebooting");
+      resetFunc();
+    }
+
     float reading = scales[i].get_units(25);
     scales[i].power_down();
     readings[i][counter] = reading;
@@ -164,7 +194,6 @@ void loop() {
       {
         Serial.println("...invalid reading(s) resetting");
         resetFunc();
-        break;
       }
       else
       {
@@ -175,48 +204,6 @@ void loop() {
       int deviation = 0;
       bool comparableReadings = true;
 
-      // for (int j = 0; j < NUM_READINGS; j++)
-      // {
-      //   float reading_f = readings[i][j];
-
-      //   Serial.print("reading: ");
-      //   Serial.println(reading_f, 5);
-
-      //   // we are within the bounds of an int so flip to integers
-      //   int reading_i = int(reading_f);
-
-      //   // int modReading = reading_i - (reading_i % 10);
-      //   // Serial.print("Adjusted to 10s: ");
-      //   // Serial.println(modReading);
-
-      //   if (j == 0)
-      //   {
-      //     //first = modReading;
-      //     first = reading_i;
-      //     deviation = int(abs(first * READING_DEVIATION));
-
-      //     Serial.print("Max deviation: ");
-      //     Serial.println(deviation);
-      //   }
-      //   else
-      //   {
-      //     //int difference = abs(first - modReading);
-      //     int difference = abs(first - reading_i);
-      //     Serial.print("Difference: ");
-      //     Serial.println(difference);
-
-      //     if (difference > deviation)
-      //     {
-      //       comparableReadings = false;
-      //       Serial.println("Too much deviation");
-      //     }
-      //     else
-      //     {
-      //       Serial.println("Deviation within tolerance");
-      //     }
-      //   }
-      // }
-
       if (comparableReadings)
       {
         Serial.println("Readings are comparable - computing new offset");
@@ -226,9 +213,6 @@ void loop() {
         {
           float reading_f = readings[i][j];
           int reading_i = int(reading_f);
-          //int modReading = reading_i - (reading_i % 10);
-
-          //combinedReadings = combinedReadings + modReading;
           combinedReadings = combinedReadings + reading_i;
         }
 
@@ -239,14 +223,6 @@ void loop() {
 
         Serial.print("average reading: ");
         Serial.println(averageReading);
-
-        // int averagedModReading = averageReading - (averageReading % 10);
-        // Serial.print("Adjusted to 10s: ");
-        // Serial.println(averagedModReading);
-
-        // Serial.print("average mod reading + offset: ");
-        // int offsetReading = averagedModReading + offsets[i];
-        // Serial.println(offsetReading);
 
         Serial.print("average reading + offset: ");
         int offsetReading = averageReading + offsets[i];
@@ -278,24 +254,10 @@ void loop() {
       Serial.println(NET_WEIGHTS[i]);
 
       int displayedReading = NET_WEIGHTS[i] + offsets[i];
-      // if (displayedReading > NET_WEIGHTS[i]) 
-      // {
-      //   displayedReading = NET_WEIGHTS[i];
-      // }
       Serial.print("Grams of beer left: ");
       Serial.println(displayedReading);
 
       float percentage = ((float) displayedReading / (float) NET_WEIGHTS[i]) * (float) 100;
-
-      // if (percentage > 100)
-      // {
-      //   percentage = 100;
-      // }
-      // if (percentage < 0)
-      // {
-      //   percentage = 0;
-      // }
-
       Serial.print("Percentage of beer left: ");
       Serial.println(round(percentage)); 
 
