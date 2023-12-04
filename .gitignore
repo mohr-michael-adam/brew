@@ -6,3 +6,4 @@ tilt.log
 venv
 bin
 packages
+.DS_Store
