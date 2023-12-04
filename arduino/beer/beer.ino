@@ -20,7 +20,7 @@ const int KEG_WEIGHTS[NUM_SCALES] = { 3900, 3900 }; // This needs to be reviewed
 
 const int NUM_WAIT_CYCLES = 4;
 
-const int LCD_SPACES[NUM_SCALES] = { 12, 7 };
+const int LCD_SPACES[NUM_SCALES] = { 9, 10 };
 
 const float L_PER_PINT = 0.473176;
 
@@ -58,11 +58,12 @@ void setup()
   lcd.clear();
 
   lcd.setCursor(0,0);
-  lcd.print("  Mohr Brew House");
+  lcd.print("  MOHR BREW HOUSE   ");
   lcd.setCursor(0, 1);
-  lcd.print("      kg pints");
-  lcd.setCursor(0, 2);
-  lcd.print("Blonde Lager|Red Ale");
+  lcd.print("    Left | Right    ");
+  lcd.setCursor(0, 3);
+  lcd.print("kg pints | kg pints ");
+
 
   for (int i = 0; i < NUM_SCALES; i++)
   {
@@ -79,7 +80,7 @@ void setup()
 
 void loop()
 {
-  lcd.setCursor(0, 3);
+  lcd.setCursor(0, 2);
 
   for (int i = 0; i < NUM_SCALES; i++)
   {
