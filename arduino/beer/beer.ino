@@ -13,7 +13,7 @@ const int CLOCK_PIN_INDEX = 1;
 
 const int SCALE_PINS[NUM_SCALES][2] = { {SCALE_DATA_A, SCALE_CLOCK_A}, {SCALE_DATA_B, SCALE_CLOCK_B} };
 
-const long SCALE_OFFSETS[NUM_SCALES] = { -33435, 136890 };
+const long SCALE_OFFSETS[NUM_SCALES] = { -105774, 136890 };
 const float SCALE_CALIBRAIONS[NUM_SCALES] = { 22.59, 22.81 };
 
 const int KEG_WEIGHTS[NUM_SCALES] = { 3900, 3900 }; // This needs to be reviewed after kegs are empty
@@ -45,7 +45,7 @@ void checkScale(HX711 scale, int i)
     Serial.print("Scale ");
     Serial.print(i);
     Serial.println(" in a bad state - rebooting");
-    resetFunc();
+    //resetFunc();
   }
 }
 
