@@ -7,16 +7,17 @@ const int SCALE_DATA_B = 5;
 const int SCALE_CLOCK_B = 6;
 
 const int NUM_SCALES = 2;
+const int NUM_ACTIVE_SCALES = 2;
 
 const int DATA_PIN_INDEX = 0;
 const int CLOCK_PIN_INDEX = 1;
 
 const int SCALE_PINS[NUM_SCALES][2] = { {SCALE_DATA_A, SCALE_CLOCK_A}, {SCALE_DATA_B, SCALE_CLOCK_B} };
 
-const long SCALE_OFFSETS[NUM_SCALES] = { -105774, 136890 };
-const float SCALE_CALIBRAIONS[NUM_SCALES] = { 22.59, 22.81 };
+const long SCALE_OFFSETS[NUM_SCALES] = { -261817, 134080 };
+const float SCALE_CALIBRAIONS[NUM_SCALES] = { 22.59, 22.59 };
 
-const int KEG_WEIGHTS[NUM_SCALES] = { 3900, 3900 }; // This needs to be reviewed after kegs are empty
+const int KEG_WEIGHTS[NUM_SCALES] = { 4700, 4700 }; // This needs to be reviewed after kegs are empty
 
 const int NUM_WAIT_CYCLES = 4;
 
@@ -57,15 +58,7 @@ void setup()
   lcd.backlight();
   lcd.clear();
 
-  lcd.setCursor(0,0);
-  lcd.print("  MOHR BREW HOUSE   ");
-  lcd.setCursor(0, 1);
-  lcd.print("    Left | Right    ");
-  lcd.setCursor(0, 3);
-  lcd.print("kg pints | kg pints ");
-
-
-  for (int i = 0; i < NUM_SCALES; i++)
+  for (int i = 0; i < NUM_ACTIVE_SCALES; i++)
   {
     Serial.print("Initializing the scale: ");
     Serial.println(i);
@@ -80,9 +73,14 @@ void setup()
 
 void loop()
 {
+  lcd.setCursor(0,0);
+  lcd.print("  MOHR BREW HOUSE   ");
   lcd.setCursor(0, 2);
+  lcd.print(" Left: ");
+  lcd.setCursor(0, 3);
+  lcd.print("Right: ");
 
-  for (int i = 0; i < NUM_SCALES; i++)
+  for (int i = 0; i < NUM_ACTIVE_SCALES; i++)
   {
     Serial.print("Scale ");
     Serial.println(i);
@@ -90,6 +88,9 @@ void loop()
     checkScale(scales[i], i);
 
     float reading = scales[i].get_units() - KEG_WEIGHTS[i];
+
+    // FAKE DATA FOR NOW
+    //reading = random(5000, 20000);
 
     Serial.print("reading: ");
     Serial.println(reading);
@@ -104,49 +105,24 @@ void loop()
     Serial.print("Pints: ");
     Serial.println(pints);
 
-    int numChars = 7; // 12.2 45
+    lcd.setCursor(0, i+2);
 
-    if (kgs < 10)
-    {
-      numChars--;
-    }
-
-    if (pints < 10)
-    {
-      numChars--;
-    }
-
-    // center the text
-    int leadingSpaces = ceil((float(LCD_SPACES[i]) - numChars) / 2);
-    int trailingSpaces = floor((float(LCD_SPACES[i]) - numChars) / 2);
-
-    Serial.print("Num chars: ");
-    Serial.println(numChars);
-
-    Serial.print("Num leading spaces: ");
-    Serial.println(leadingSpaces);
-
-    Serial.print("Num trailing spaces: ");
-    Serial.println(trailingSpaces);
-
-    for (int j = 0; j < leadingSpaces; j++)
-    {
-      lcd.print(" ");
-    }
-
-    lcd.print(String(kgs, 1));
-    lcd.print(" ");
-    lcd.print(pints);
-
-    for (int j = 0; j < trailingSpaces; j++)
-    {
-      lcd.print(" ");
-    }
+    String scale;
 
     if (i == 0)
     {
-      lcd.print("|");
+      scale = " Left:";
     }
+    else
+    {
+      scale = "Right:";
+    }
+
+    lcd.print(scale);
+    lcd.print(String(kgs, 1));
+    lcd.print("kg ");
+    lcd.print(pints);
+    lcd.print("p   ");
   }
 
   delay(1000);

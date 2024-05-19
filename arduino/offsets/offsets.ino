@@ -25,7 +25,7 @@ void setup()
 
   for (int i = 0; i < NUM_SCALES; i++)
   {
-    scales[i].begin(SCALE_PINS[DATA_PIN_INDEX], SCALE_PINS[CLOCK_PIN_INDEX]);
+    scales[i].begin(SCALE_PINS[i][DATA_PIN_INDEX], SCALE_PINS[i][CLOCK_PIN_INDEX]);
     scales[i].set_scale(); // no units - raw values
     scales[i].tare(); // get an average reading and set as offset
 
