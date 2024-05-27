@@ -12,7 +12,7 @@ resource "aws_cloudwatch_event_target" "export_brew_event_target" {
 
   input = <<EOF
 {
-  "brew": "Festa Brew Dry Lager April 2024"
+  "brew": "Festa Brew Cream Ale May 2024"
 }
 EOF
 

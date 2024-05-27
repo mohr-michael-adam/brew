@@ -158,3 +158,10 @@ resource "aws_s3_bucket_object" "festa_brew_dry_lager_april_2024_html_object" {
   source = "ui/Festa Brew Dry Lager April 2024.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "festa_brew_cream_ale_may_2024_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "Festa Brew Cream Ale May 2024.html"
+  source = "ui/Festa Brew Cream Ale May 2024.html"
+  content_type = "text/html"
+}
