@@ -17,7 +17,7 @@ const int SCALE_PINS[NUM_SCALES][2] = { {SCALE_DATA_A, SCALE_CLOCK_A}, {SCALE_DA
 const long SCALE_OFFSETS[NUM_SCALES] = { -261817, 134080 };
 const float SCALE_CALIBRAIONS[NUM_SCALES] = { 22.59, 22.59 };
 
-const int KEG_WEIGHTS[NUM_SCALES] = { 4700, 4700 }; // This needs to be reviewed after kegs are empty
+const int KEG_WEIGHTS[NUM_SCALES] = { 4700, 3900 }; // This needs to be reviewed after kegs are empty
 
 const int NUM_WAIT_CYCLES = 4;
 
