@@ -27,6 +27,8 @@ const float L_PER_PINT = 0.473176;
 
 HX711 scales[NUM_SCALES];
 
+float last_reading[NUM_SCALES] = {-1000, -1000};
+
 LiquidCrystal_I2C lcd(0x27,20,4);     
 
 void(* resetFunc) (void) = 0; // create a standard reset function
@@ -100,25 +102,38 @@ void loop()
     Serial.print("kgs: ");
     Serial.println(String(kgs, 1));
 
+    Serial.print("last kgs: ");
+    Serial.println(String(last_reading[i, 1]));
+
+    Serial.print("Delta: ");
+    Serial.println(abs(kgs - last_reading[i]));
+
+    if (abs(kgs - last_reading[i]) <= 0.1)
+    {
+      continue;
+    }
+
+    last_reading[i] = kgs;
+
     int pints = round(kgs / L_PER_PINT); // assumption 1kg = 1L of beer (slightly off but close enough)
 
     Serial.print("Pints: ");
     Serial.println(pints);
 
-    lcd.setCursor(0, i+2);
+    lcd.setCursor(7, i+2);
 
-    String scale;
+    // String scale;
 
-    if (i == 0)
-    {
-      scale = " Left:";
-    }
-    else
-    {
-      scale = "Right:";
-    }
+    // if (i == 0)
+    // {
+    //   scale = " Left:";
+    // }
+    // else
+    // {
+    //   scale = "Right:";
+    // }
 
-    lcd.print(scale);
+    // lcd.print(scale);
     lcd.print(String(kgs, 1));
     lcd.print("kg ");
     lcd.print(pints);
