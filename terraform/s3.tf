@@ -172,3 +172,10 @@ resource "aws_s3_bucket_object" "festa_brew_red_ale_spring_2025_html_object" {
   source = "ui/Festa Brew Red Ale Spring 2025.html"
   content_type = "text/html"
 }
+
+resource "aws_s3_bucket_object" "festa_brew_bmr_cerveza_spring_2025_html_object" {
+  bucket = aws_s3_bucket.brew_data_bucket.id
+  key    = "Festa Brew BMR Cerveza Spring 2025.html"
+  source = "ui/Festa Brew BMR Cerveza Spring 2025.html"
+  content_type = "text/html"
+}
